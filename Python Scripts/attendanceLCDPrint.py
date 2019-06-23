@@ -68,7 +68,7 @@ class attendanceLCDPrint:
     def printInitialMessage(self):
         #self.lcd.blink(False)
         self.printClearScreen()
-        self.lcd.printline(0 , "    Company Name    ")
+        self.lcd.printline(0 , "  ADD COMPANY NAME  ")
         self.lcd.printline(1 , "SCAN FOR ATTENDANCE ")
         self.lcd.printline(2 , "        OR          ")
         self.lcd.printline(3 , "PRESS '#' TO ENROLL ")
