@@ -1,0 +1,9 @@
+Exception From :attendanceAllAPI{getFingerId} Exception Message: ('Connection aborted.', gaierror(-2, 'Name or service not known')) Time: 2019-03-29 23:06:37
+Exception From :attendanceAllAPI{authenticatePassword} Exception Message: ('Connection aborted.', gaierror(-2, 'Name or service not known')) Time: 2019-03-29 23:06:48
+Exception From :attendanceAllAPI{authenticatePassword} Exception Message: ('Connection aborted.', gaierror(-2, 'Name or service not known')) Time: 2019-03-29 23:07:02
+Exception From :attendanceAllAPI{authenticatePassword} Exception Message: ('Connection aborted.', gaierror(-2, 'Name or service not known')) Time: 2019-03-29 23:07:32
+Exception From :attendanceGetFingerInfo{getFingerPrintInformation} Exception Message: string indices must be integers Time: 2019-03-29 23:08:32
+Exception From :attendanceAllAPI{getDataToSync} Exception Message: string indices must be integers Time: 2019-03-30 00:32:59
+Exception From :attendanceAllAPI{getDataToSync} Exception Message: string indices must be integers Time: 2019-03-30 00:34:20
+Exception From :attendanceRFIDScanner{__main__} Exception Message: invalid literal for int() with base 16: '\x00\x00\x00\x00\x00\x00\x00\x00' Time: 2019-03-30 01:08:38
+Exception From :attendanceAllAPI{getFingerId} Exception Message: HTTPConnectionPool(host='spectrumtechiot.com', port=80): Read timed out. (read timeout=40) Time: 2019-03-30 01:22:04
