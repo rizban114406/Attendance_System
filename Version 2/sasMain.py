@@ -35,47 +35,6 @@ keyPress = attendanceKeypad()
 from attendanceAllAPI import attendanceAllAPI
 apiObject = attendanceAllAPI()
 
-def createEventLogg(employeeCardorFingerNumber,attendanceFlag):
-    currentDateTime,currentTime = checkCurrentDateTime()
-    if attendanceFlag == '2':
-        employeeDetails = dbObject.getEmployeeDetailsFromCard(employeeCardorFingerNumber,database)
-        if employeeDetails == '0':
-            GPIO.output(21, 1)
-            dbObject.insertEventTime("0",\
-                                     employeeCardorFingerNumber,\
-                                     currentDateTime,\
-                                     attendanceFlag,\
-                                     '0',
-                                     database)
-            lcdPrint.printIfNoMatchFound()
-            GPIO.output(21, 0)
-        else :
-            GPIO.output(20, 1)
-            dbObject.insertEventTime(employeeDetails[1],\
-                                     employeeCardorFingerNumber,\
-                                     currentDateTime,\
-                                     attendanceFlag,\
-                                     employeeDetails[3],\
-                                     database)
-            lcdPrint.printAfterSuccessfullEventLogg(currentTime,employeeDetails)
-            GPIO.output(20, 0)
-            
-    elif attendanceFlag == '1':
-        employeeDetails = dbObject.getEmployeeDetails(employeeCardorFingerNumber,database)
-        if employeeDetails != '0':
-            dbObject.insertEventTime(employeeDetails[1], \
-                                     employeeCardorFingerNumber, \
-                                     currentDateTime, \
-                                     attendanceFlag, \
-                                     employeeDetails[3], \
-                                     database)
-            GPIO.output(20, 1)
-            lcdPrint.printAfterSuccessfullEventLogg(currentTime,employeeDetails)        
-            GPIO.output(20, 0)
-            return 1
-        else:
-            return 0
-            
 def configureFingerPrint():
     while True:
         try:
@@ -92,23 +51,6 @@ def configureFingerPrint():
             sys.exit()    
     return f
 
-def readFromRFIDScanner():
-    ser = serial.Serial("/dev/serial0")
-    try:
-        ser.baudrate = 9600
-        readID = ser.read(11)
-        ser.close()
-        #print readID
-        readID = readID.replace("\x02", "" )
-        readID = readID.replace("\x03", "" )
-        #print readID[2:10]
-        return readID[2:10]
-    except Exception as e:
-        ser.close()
-#        lcdPrint.printExceptionMessage(str(e))
-        fileObject.updateExceptionMessage("attendanceRFIDScanner{readFromRFIDScanner}",str(e))
-        return "NA"
-  
 def checkCurrentDateTime():
     nowTime = datetime.datetime.now()
     currentTime = nowTime.strftime('%H:%M:%S')
@@ -148,7 +90,6 @@ def updateListOfUsedTemplates(f):
     index = []
     for i in range(0, len(tableIndex1)):
         index.append(tableIndex1[i])
-        #print('Template at position #' + str(i) + ' is used: ' + str(tableIndex[i]))
     for i in range(0, len(tableIndex2)):
         index.append(tableIndex2[i])
     for i in range(0, len(tableIndex3)):
@@ -428,13 +369,53 @@ def enrollNewEmployee(f,deviceId):
     except Exception as e:
          lcdPrint.printExceptionMessage(str(e))
          fileObject.updateExceptionMessage("attendanceFingerPrint{enrollNewEmployee}",str(e))
-        
+
+def createEventLogg(employeeCardorFingerNumber,attendanceFlag):
+    currentDateTime,currentTime = checkCurrentDateTime()
+    if attendanceFlag == '2':
+        employeeDetails = dbObject.getEmployeeDetailsFromCard(employeeCardorFingerNumber,database)
+        if employeeDetails == '0':
+            GPIO.output(21, 1)
+            dbObject.insertEventTime("0",\
+                                     employeeCardorFingerNumber,\
+                                     currentDateTime,\
+                                     attendanceFlag,\
+                                     '0',
+                                     database)
+            lcdPrint.printIfNoMatchFound()
+            GPIO.output(21, 0)
+        else :
+            GPIO.output(20, 1)
+            dbObject.insertEventTime(employeeDetails[1],\
+                                     employeeCardorFingerNumber,\
+                                     currentDateTime,\
+                                     attendanceFlag,\
+                                     employeeDetails[3],\
+                                     database)
+            lcdPrint.printAfterSuccessfullEventLogg(currentTime,employeeDetails)
+            GPIO.output(20, 0)
+            
+    elif attendanceFlag == '1':
+        employeeDetails = dbObject.getEmployeeDetails(employeeCardorFingerNumber,database)
+        if employeeDetails != '0':
+            dbObject.insertEventTime(employeeDetails[1], \
+                                     employeeCardorFingerNumber, \
+                                     currentDateTime, \
+                                     attendanceFlag, \
+                                     employeeDetails[3], \
+                                     database)
+            GPIO.output(20, 1)
+            lcdPrint.printAfterSuccessfullEventLogg(currentTime,employeeDetails)        
+            GPIO.output(20, 0)
+            return 1
+        else:
+            return 0
+       
 def matchFingerPrint(f):
     try:
         f.convertImage(0x01)
         result = f.searchTemplate()
         positionNumber = result[0]
-#        accuracyScore = result[1]
         print(positionNumber)
         if (positionNumber == -1):
             GPIO.output(21, 1)
@@ -447,6 +428,20 @@ def matchFingerPrint(f):
                 lcdPrint.printAfterSuccessfullEventLoggButNoEmployeeID()
     except Exception as e:
         fileObject.updateExceptionMessage("attendanceRFIDScanner{matchFingerPrint}",str(e))
+        
+def readFromRFIDScanner():
+    ser = serial.Serial("/dev/serial0")
+    try:
+        ser.baudrate = 9600
+        readID = ser.read(11)
+        ser.close()
+        readID = readID.replace("\x02", "" )
+        readID = readID.replace("\x03", "" )
+        return readID[2:10]
+    except Exception as e:
+        ser.close()
+        fileObject.updateExceptionMessage("attendanceRFIDScanner{readFromRFIDScanner}",str(e))
+        return "NA"
     
 def workWithFingerPrintSensor():
     global desiredTask
