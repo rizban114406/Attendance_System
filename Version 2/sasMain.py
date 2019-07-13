@@ -18,15 +18,15 @@ GPIO.setup(21, GPIO.OUT)
 
 from pyfingerprint.pyfingerprint import PyFingerprint
 
-from attendanceFileConfig import attendanceFileConfig
-fileObject = attendanceFileConfig()
+from sasFile import sasFile
+fileObject = sasFile()
 
-from attendanceDatabaseConfig import attendanceDatabaseConfig
-dbObject = attendanceDatabaseConfig()
+from sasDatabase import sasDatabase
+dbObject = sasDatabase()
 database = dbObject.connectDataBase()
 
-from attendanceLCDPrint import attendanceLCDPrint
-lcdPrint = attendanceLCDPrint()
+from sasLCD import sasLCD
+lcdPrint = sasLCD()
 desiredTask = '1'
 lock = threading.Lock()
 deviceId = dbObject.getDeviceId(database)
@@ -127,7 +127,7 @@ def syncWithOtherDevices(f):
             print("Device Is Already Synced With The Server")
         updateListOfUsedTemplates(f)
     except Exception as e:
-        fileObject.updateExceptionMessage("attendanceFingerPrint{syncWithOtherDevices}",str(e))
+        fileObject.updateExceptionMessage("sasMain{syncWithOtherDevices}",str(e))
         fileObject.updateCatTask('1')
         dbObject.databaseClose(database)
         sys.exit()
@@ -368,7 +368,7 @@ def enrollNewEmployee(f,deviceId):
             lcdPrint.printDeviceMaintanace()
     except Exception as e:
          lcdPrint.printExceptionMessage(str(e))
-         fileObject.updateExceptionMessage("attendanceFingerPrint{enrollNewEmployee}",str(e))
+         fileObject.updateExceptionMessage("sasMain{enrollNewEmployee}",str(e))
 
 def createEventLogg(employeeCardorFingerNumber,attendanceFlag):
     currentDateTime,currentTime = checkCurrentDateTime()
@@ -427,7 +427,7 @@ def matchFingerPrint(f):
                 f.deleteTemplate(positionNumber)
                 lcdPrint.printAfterSuccessfullEventLoggButNoEmployeeID()
     except Exception as e:
-        fileObject.updateExceptionMessage("attendanceRFIDScanner{matchFingerPrint}",str(e))
+        fileObject.updateExceptionMessage("sasMain{matchFingerPrint}",str(e))
         
 def readFromRFIDScanner():
     ser = serial.Serial("/dev/serial0")
@@ -440,7 +440,7 @@ def readFromRFIDScanner():
         return readID[2:10]
     except Exception as e:
         ser.close()
-        fileObject.updateExceptionMessage("attendanceRFIDScanner{readFromRFIDScanner}",str(e))
+        fileObject.updateExceptionMessage("sasMain{readFromRFIDScanner}",str(e))
         return "NA"
     
 def workWithFingerPrintSensor():
@@ -457,7 +457,6 @@ def workWithFingerPrintSensor():
             while True:  
                 while (f.readImage() == False):
                     desiredTask = fileObject.readDesiredTask()
-    #                print(desiredTask)
                     if (desiredTask == '2') :
                         break
                     t.sleep(.8)
@@ -482,7 +481,7 @@ def workWithFingerPrintSensor():
                 t.sleep(1)
     #            print("A finger Is read")
         except Exception as e:
-            fileObject.updateExceptionMessage("attendanceFingerPrint{workWithFingerPrintSensor}",str(e))
+            fileObject.updateExceptionMessage("sasMain{workWithFingerPrintSensor}",str(e))
         
 def workWithRFSensor():
     global desiredTask
@@ -506,7 +505,7 @@ def workWithRFSensor():
                 lock.release()
                 t.sleep(1)
         except Exception as e:
-            fileObject.updateExceptionMessage("attendanceFingerPrint{workWithFingerPrintSensor}",str(e))
+            fileObject.updateExceptionMessage("sasMain{workWithFingerPrintSensor}",str(e))
 
 def functionKillProgram():
     #print("Killing Started")

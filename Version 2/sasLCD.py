@@ -1,12 +1,23 @@
 import liquidcrystal_i2c as LCD
 import time as t
 
-class attendanceLCDPrint:
+class sasLCD:
 
-    # Define LCD column and row size for 20x4 LCD.
     lcd_columns = 20
     lcd_rows    = 4
-    lcd = LCD.LiquidCrystal_I2C(0x27,1,numlines=lcd_rows)
+    
+    def __init__(self):
+        import subprocess
+        import re
+        p = subprocess.Popen(['i2cdetect', '-y','1'],stdout=subprocess.PIPE,)
+        for i in range(0,9):
+            line = str(p.stdout.readline())
+            for match in re.finditer("[0-9][0-9]:.*[a-zA-Z0-9][a-zA-Z0-9]", line):
+                address = match.group()
+        if (len(address) > 0):
+            addresses = address.split('-- ')
+            i2cAddress = addresses[len(addresses)-1]
+            self.lcd = LCD.LiquidCrystal_I2C(int(i2cAddress,16),1,numlines=self.lcd_rows)
         
     def printIfNoMatchFound(self):
         self.printClearScreen()
