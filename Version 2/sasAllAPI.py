@@ -19,11 +19,12 @@ class sasAllAPI:
 
     def checkServerStatus(self,employeeId,selectedCompany):
         try:
-            mainURL = self.mainURL + "valid_employee.php"
+            mainURL = self.mainURL + "valid_employee"
             payload = {"employee"  : employeeId, \
-                       "companyId" : selectedCompany}
+                       "companyid" : selectedCompany}
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload, timeout = 40)
-            print r.content
+#            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success' and output['code'] == "1"):
                 return str(output['data'])
@@ -31,8 +32,7 @@ class sasAllAPI:
                 return "Registered"
             elif(output['status'] == 'failed' and output['code'] == "0"):
                 return "Invalid"    
-        except Exception,e:
-            print str(e)
+        except Exception as e:
             fileObject.updateExceptionMessage("sasAllAPI{checkServerStatus}",str(e))
             return "Server Down"
 
@@ -40,12 +40,13 @@ class sasAllAPI:
         try:
             receivedData = []
             mainURL = self.mainURL + "fingerprint_enrollment.php"
-            payload = {"uniqueId"     : uniqueId, \
-                       "fingerMatrix" : matrix , \
-                       "deviceId"     : deviceId, \
-                       "companyId"    : selectedCompany}
+            payload = {"uniqueid"     : uniqueId, \
+                       "fingermatrix" : matrix , \
+                       "deviceid"     : deviceId, \
+                       "companyid"    : selectedCompany}
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload, timeout = 40)
-            print r.content
+#            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success'):
                 receivedData.append(output['data']['employeeid'])
@@ -55,8 +56,7 @@ class sasAllAPI:
                 return receivedData
             else:
                 return "No"
-        except Exception,e:
-            print str(e)
+        except Exception as e:
             fileObject.updateExceptionMessage("sasAllAPI{getFingerId}",str(e))
             return "Server Error"
 
@@ -96,7 +96,7 @@ class sasAllAPI:
 
     def getCardDataToSync(self,receivedData,deviceId):
         try:
-            mainURL = self.mainURL + "rfid_sync.php"
+            mainURL = self.mainURL + "rfid_sync"
             dataToSend = json.dumps(receivedData)
             payload = {"data"      : dataToSend,\
                        "deviceid" : deviceId}
@@ -117,12 +117,12 @@ class sasAllAPI:
 
     def authenticatePassword(self,password,deviceId):
         try:
-            mainURL = self.mainURL + "check_device_auth.php"
-            payload = {"deviceId" : deviceId, \
+            mainURL = self.mainURL + "check_device_auth"
+            payload = {"deviceid" : deviceId, \
                        "password"  : password }
-            
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
-            print r.content
+#            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == "success"):
                 return "Matched"
@@ -151,7 +151,6 @@ class sasAllAPI:
                 return '0'
         
         except Exception as e:
-            print str(e)
             fileObject.updateExceptionMessage("sasAllAPI{updateDevice}",str(e))
             return "Server Error"
 
