@@ -1,8 +1,8 @@
 import time as t
-from attendanceKeypad import attendanceKeypad
-from attendanceFileConfig import attendanceFileConfig
-keypress = attendanceKeypad()
-fileObject = attendanceFileConfig()
+from sasKeypad import sasKeypad
+from sasFile import sasFile
+keypress = sasKeypad()
+fileObject = sasFile()
 def digit():
     r = None
     while 1:

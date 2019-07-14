@@ -24,16 +24,15 @@ fileObject = sasFile()
 from sasDatabase import sasDatabase
 dbObject = sasDatabase()
 database = dbObject.connectDataBase()
-
+deviceId = dbObject.getDeviceId(database)
 from sasLCD import sasLCD
 lcdPrint = sasLCD()
 desiredTask = '1'
 lock = threading.Lock()
-deviceId = dbObject.getDeviceId(database)
-from attendanceKeypad import attendanceKeypad
-keyPress = attendanceKeypad()
-from attendanceAllAPI import attendanceAllAPI
-apiObject = attendanceAllAPI()
+from sasKeypad import sasKeypad
+keyPress = sasKeypad()
+from sasAllAPI import sasAllAPI
+apiObject = sasAllAPI()
 
 def configureFingerPrint():
     while True:
@@ -79,7 +78,7 @@ def createNewTemplateToSync(f,employeeInfo):
                                employeeInfo[7], \
                                employee, \
                                database)
-    dbObject.deleteFromTempTableToSync(employeeInfo[2],employeeInfo[7],database)
+    dbObject.deleteFromTempTableToSync(employeeInfo[2],database)
         
 
 def updateListOfUsedTemplates(f):
@@ -109,17 +108,17 @@ def syncWithOtherDevices(f):
         getDataToSync = dbObject.getInfoFromTempTableToEnrollOrUpdate(database)
         if (getDataToDelete != "Synced"):
             for reading in getDataToDelete.fetchall():
-                prevId = dbObject.checkEmployeeInfoTableToDelete(reading[0],reading[1],database)
+                prevId = dbObject.checkEmployeeInfoTableToDelete(reading[0],database)
                 f.deleteTemplate(prevId)
-                dbObject.deleteFromEmployeeInfoTable(reading[0],reading[1],database)
-                dbObject.deleteFromTempTableToSync(reading[0],reading[1],database)
+                dbObject.deleteFromEmployeeInfoTable(reading[0],database)
+                dbObject.deleteFromTempTableToSync(reading[0],database)
                 t.sleep(.3)                                 
         if (getDataToSync != "Synced"):
             for reading in getDataToSync.fetchall():
-                prevId = dbObject.checkEmployeeInfoTableToDelete(reading[2],reading[7],database)
+                prevId = dbObject.checkEmployeeInfoTableToDelete(reading[2],database)
                 if prevId > 0:
                     f.deleteTemplate(prevId)
-                    dbObject.deleteFromEmployeeInfoTable(reading[2],reading[7],database)
+                    dbObject.deleteFromEmployeeInfoTable(reading[2],database)
                 createNewTemplateToSync(f,reading)
                 t.sleep(.3)
             print("Device Is Fully Synced With The Server")

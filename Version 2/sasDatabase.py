@@ -41,10 +41,10 @@ class sasDatabase:
                                                      PRIMARY KEY(id))")
         self.databaseCommit(database)
 
-    def deleteFromEmployeeInfoTable(self,uniqueId,companyId,database): # Delete From Employee Infromation Table After Deleting Employee
+    def deleteFromEmployeeInfoTable(self,uniqueId,database): # Delete From Employee Infromation Table After Deleting Employee
         curs = database.cursor()
         curs.execute("Delete FROM employeeInfoTable \
-                      WHERE uniqueId = %s and companyId = %s",(int(uniqueId),int(companyId)))
+                      WHERE uniqueId = %s",(int(uniqueId)))
         self.databaseCommit(database)
 
     def deleteFromEmployeeInfoTableToSync(self,notListedTemplateNumber,database): # Delete From Employee Infromation Table After Deleting Employee
@@ -62,7 +62,7 @@ class sasDatabase:
     def getInfoFromEmployeeInfoTable(self,database): # Get Data From Employee Info Table To Send It To The Server
         try:
             curs = database.cursor()
-            curs.execute("SELECT uniqueId,fingerId,companyId From employeeInfoTable")
+            curs.execute("SELECT uniqueId,fingerId From employeeInfoTable")
             receivedData = []
             for reading in curs.fetchall():
                 receivedData.append({"uniqueid"     : reading[0], \
@@ -85,12 +85,12 @@ class sasDatabase:
         employeeNumber = curs.fetchone()
         return int(employeeNumber[0])
 
-    def checkEmployeeInfoTableToDelete(self,uniqueId,companyId,database): # 
+    def checkEmployeeInfoTableToDelete(self,uniqueId,database): # 
         curs = database.cursor()
         curs.execute ("SELECT fingerId \
                        FROM employeeInfoTable \
-                       WHERE uniqueId = %s and companyId = %s", \
-                      (int(uniqueId),int(companyId)))
+                       WHERE uniqueId = %s", \
+                      (int(uniqueId)))
         if (curs.rowcount != 0):
             employeeFingerId = curs.fetchone()
             return int(employeeFingerId[0])
@@ -223,16 +223,16 @@ class sasDatabase:
         except Exception as e:
             fileObject.updateExceptionMessage("sasDatabase{insertToTempTableToSync}",str(e))
 
-    def deleteFromTempTableToSync(self,uniqueId,companyId,database): # Delete From Temporary Table After Synced
+    def deleteFromTempTableToSync(self,uniqueId,database): # Delete From Temporary Table After Synced
         curs = database.cursor()
         curs.execute("Delete FROM tempTableToSync \
-                      WHERE uniqueId = %s and companyId = %s",(int(uniqueId),int(companyId)))
+                      WHERE uniqueId = %s",(int(uniqueId)))
         self.databaseCommit(database)
 
     def getInfoFromTempTableToDelete(self,database): # Get Data From Temporary Table To Sync With The Server
         curs = database.cursor()
         try:     
-            curs.execute("SELECT uniqueId,companyId From tempTableToSync Where desiredTask = '3'")
+            curs.execute("SELECT uniqueId From tempTableToSync Where desiredTask = '3'")
             if (curs.rowcount != 0):
                 return curs
             else:
@@ -356,9 +356,9 @@ class sasDatabase:
                       From employeeCardInfo")
         receivedData = []
         for reading in curs.fetchall():
-            receivedData.append({"uniqueid" : reading[0], "cardNumber" : reading[1]})
+            receivedData.append({"uniqueid" : reading[0], "cardnumber" : reading[1]})
         if (curs.rowcount == 0):
-            receivedData.append({"uniqueid" : 0, "cardNumber" : 0})
+            receivedData.append({"uniqueid" : 0, "cardnumber" : 0})
         return receivedData
 
     def dropEmployeeCardInfoTable(self,database): # Drop Employee Card Info Table
@@ -575,8 +575,8 @@ class sasDatabase:
                                   ipAddress,\
                                   database):
         curs = database.cursor()
-        if (deviceInfo['company_id'] is None):
-            deviceInfo['company_id'] = ""
+        if (deviceInfo['companyid'] is None):
+            deviceInfo['companyid'] = ""
         if (deviceInfo['address'] is None):
             deviceInfo['address'] = ""
         if (deviceInfo['subaddress'] is None):
@@ -589,8 +589,8 @@ class sasDatabase:
                                                       subAddress,\
                                                       ipAddress) VALUES (%s,%s,%s,%s,%s,%s)",\
                                                       (int(deviceInfo['id']),\
-                                                       str(deviceInfo['hardware_id']),\
-                                                       str(deviceInfo['company_id']),\
+                                                       str(deviceInfo['hardwareid']),\
+                                                       str(deviceInfo['companyid']),\
                                                        str(deviceInfo['address']),\
                                                        str(deviceInfo['subaddress']),\
                                                        str(ipAddress)))
@@ -603,22 +603,26 @@ class sasDatabase:
                               ipAddress,\
                               database):
         curs = database.cursor()
-        if (deviceInfo['company_id'] is None):
-            deviceInfo['company_id'] = ""
+        if (deviceInfo['companyid'] is None):
+            deviceInfo['companyid'] = ""
         if (deviceInfo['address'] is None):
             deviceInfo['address'] = ""
         if (deviceInfo['subaddress'] is None):
             deviceInfo['subaddress'] = ""
-        curs.execute ("UPDATE deviceInfoTable SET companyId = %s, \
+        try:
+            curs.execute ("UPDATE deviceInfoTable SET companyId = %s, \
                                                   address = %s, \
                                                   subAddress = %s, \
                                                   ipAddress = %s \
                                                   WHERE id = 1",\
-                                                  (str(deviceInfo['company_id']),\
+                                                  (str(deviceInfo['companyid']),\
                                                    str(deviceInfo['address']),\
                                                    str(deviceInfo['subaddress']),\
                                                    str(ipAddress)))
-        self.databaseCommit(database)
+            self.databaseCommit(database)
+        except Exception as e:
+            print str(e)
+            fileObject.updateExceptionMessage("sasDatabase{updateDeviceInfoTable}",str(e))
         
     ####################### All Functions Regarding Device Info Table ###################
     

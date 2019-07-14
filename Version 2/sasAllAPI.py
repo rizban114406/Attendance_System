@@ -1,17 +1,16 @@
 import json
 import requests
-from attendanceFileConfig import attendanceFileConfig
-from attendanceDatabaseConfig import attendanceDatabaseConfig
-fileObject = attendanceFileConfig()
-class attendanceAllAPI:
-    dbObject = attendanceDatabaseConfig()
+from sasFile import sasFile
+from sasDatabase import sasDatabase
+fileObject = sasFile()
+class sasAllAPI:
+    dbObject = sasDatabase()
     database = dbObject.connectDataBase()
     ipAddress = ""
     baseURL = ""
     mainURL = ""
     
     def __init__(self):
-        print "API FIles"
         desiredDetails = self.dbObject.getAllConfigurationDetails(self.database)
         self.ipAddress = desiredDetails[1]
         self.baseURL = desiredDetails[2]
@@ -34,7 +33,7 @@ class attendanceAllAPI:
                 return "Invalid"    
         except Exception,e:
             print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{checkServerStatus}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{checkServerStatus}",str(e))
             return "Server Down"
 
     def getFingerId(self,uniqueId,matrix,selectedCompany,deviceId):
@@ -58,58 +57,53 @@ class attendanceAllAPI:
                 return "No"
         except Exception,e:
             print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{getFingerId}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{getFingerId}",str(e))
             return "Server Error"
 
     def sendEventData(self,mainData):
         try:
-            mainURL = self.mainURL + "device_data.php"
+            mainURL = self.mainURL + "device_data"
             dataToSend = json.dumps(mainData,sort_keys = True)
-#            print(dataToSend)
             payload = {"data" : dataToSend}
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 40)
-            print r.content
+#            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success'):
                 return "Success"
             else:
                 return "Not Successfull"
         except Exception as e:
-            fileObject.updateExceptionMessage("attendanceAllAPI{sendEventData}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{sendEventData}",str(e))
             return str(e)
 
     def getDataToSync(self,receivedData,deviceId):
         try:
-            mainURL = self.mainURL + "fingerprint_sync.php"
+            mainURL = self.mainURL + "fingerprint_sync"
             dataToSend = json.dumps(receivedData)
-##            print dataToSend
-##            print deviceId
             payload = {"data" : dataToSend}
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 200)
-            print r.content
+#            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success'):
                 return output['data']
             else:
                 return "Some Thing Is Wrong"       
         except Exception as e:
-            print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{getDataToSync}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{getDataToSync}",str(e))
             return "Server Error"
 
     def getCardDataToSync(self,receivedData,deviceId):
         try:
             mainURL = self.mainURL + "rfid_sync.php"
-#            print mainURL
             dataToSend = json.dumps(receivedData)
-            print dataToSend
-##            print deviceId
             payload = {"data"      : dataToSend,\
-                       "deviceId" : deviceId}
+                       "deviceid" : deviceId}
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 200)
-            print r.content
+#            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
-#           print output
             if (output['status'] == 'success'):
                 if output['data']['sync_status'] == '0':
                     fileObject.updateConfigUpdateStatus('0')
@@ -118,8 +112,7 @@ class attendanceAllAPI:
                 return "Some Thing Is Wrong"
         
         except Exception as e:
-            print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{getCardDataToSync}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{getCardDataToSync}",str(e))
             return "Server Error"
 
     def authenticatePassword(self,password,deviceId):
@@ -138,20 +131,20 @@ class attendanceAllAPI:
         
         except Exception as e:
             #print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{authenticatePassword}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{authenticatePassword}",str(e))
             return "Server Error"
 
     def updateDevice(self,deviceId,ipAddress,osVersion,sync_status):
         try:
-            mainURL = self.mainURL + "update_device.php"
-            payload = {"deviceId"  : deviceId,   \
+            mainURL = self.mainURL + "update_device"
+            payload = {"deviceid"  : deviceId,   \
                        "ip"        : ipAddress, \
                        "osversion" : osVersion,  \
                        "syncstatus": sync_status }
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
-            print r.content
+#            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
-            #print r.content
             if (output['status'] == "success" and output['code'] == "1"):
                 return '1'
             else:
@@ -159,77 +152,73 @@ class attendanceAllAPI:
         
         except Exception as e:
             print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{updateDevice}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{updateDevice}",str(e))
             return "Server Error"
 
     def getDeviceInfo(self,deviceId):
         try:
-            mainURL = self.mainURL + "get_device.php"
-            payload = {"deviceId" : deviceId }
+            mainURL = self.mainURL + "get_device"
+            payload = {"deviceid" : deviceId }
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
-            print r.content
             output = json.loads(r.content)
+#            print("Data Received {}".format(r.content))
             if (output['status'] == "success" and output['code'] == "1"):
                 return output['data']
             else:
                 return '0'
         
         except Exception as e:
-            print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{getDeviceInfo}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{getDeviceInfo}",str(e))
             return "Server Error"
 
     def getCompanyDetails(self,deviceId):
         try:
-            mainURL = self.mainURL + "get_company.php"
-            payload = {"deviceId" : deviceId }
+            mainURL = self.mainURL + "get_company"
+            payload = {"deviceid" : deviceId }
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
-            print r.content
+#            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == "success"):
                 return output['data']
             else:
-                return '0'
-        
+                return '0'       
         except Exception as e:
-            print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{getCompanyDetails}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{getCompanyDetails}",str(e))
             return "Server Error"
 
     def createDevice(self,hardwareId,osVersion):
         try:
-            mainURL = self.mainURL + "create_device.php"
-            payload = {"hardwareId" : hardwareId, \
-                       "osVersion"  : osVersion }
-            print payload
+            mainURL = self.mainURL + "create_device"
+            payload = {"hardwareid" : hardwareId, \
+                       "osversion"  : osVersion }
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
-            print r.content
+#            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == "success" and output['code'] == "1"):
                 return output['data']
             else:
-                return '0'
-        
+                return '0'   
         except Exception as e:
-            print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{createDevice}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{createDevice}",str(e))
             return "Server Error"
 
     def getConfigDetails(self,deviceId):
         try:
-            mainURL = self.mainURL + "get_config.php"
-            payload = {"deviceId" : deviceId }
+            mainURL = self.mainURL + "get_config"
+            payload = {"deviceid" : deviceId }
+#            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
             output = json.loads(r.content)
-            print r.content
+#            print("Data Received {}".format(r.content))
             if (output['status'] == "success" and output['code'] == "1"):
                 return output['data']
             else:
                 return '0'
-        
         except Exception as e:
-            print str(e)
-            fileObject.updateExceptionMessage("attendanceAllAPI{getConfigDetails}",str(e))
+            fileObject.updateExceptionMessage("sasAllAPI{getConfigDetails}",str(e))
             return "Server Error"
 
         
