@@ -40,7 +40,7 @@ apiObject = sasAllAPI()
 
 def getHardwareId():
     # Extract serial from cpuinfo file
-    cpuserial = "0000000000000000"
+    cpuserial = ""
     try:
         f = open('/proc/cpuinfo','r')
         for line in f:
@@ -57,9 +57,9 @@ def getIpAddress():
     ip =  commands.getoutput('hostname -I')
     return ip
 
-def updateToNewCode(deviceCodeName,deviceCodeURL,baseURL):
+def updateToNewCode(deviceCodeName,deviceCodeURL):
     
-    downloadURL = "http://" + baseURL + deviceCodeURL + deviceCodeName
+    downloadURL = "http://" + deviceCodeURL + deviceCodeName
     try:
         testfile = urllib.URLopener()     
         testfile.retrieve(downloadURL, deviceCodeName)       
@@ -91,16 +91,15 @@ def getNetworkConfiguration(deviceId):
         configDetails = dbObject.getAllConfigurationDetails(database)
         configDetailsUpdated = apiObject.getConfigDetails(deviceId)
         if configDetailsUpdated != '0' and configDetailsUpdated != "Server Error":
-            if str(configDetailsUpdated['base_url']) != str(configDetails[1]):
-                dbObject.updateBaseUrl(str(configDetailsUpdated['base_url']),database)
-            if str(configDetailsUpdated['sub_url']) != str(configDetails[2]):
-                dbObject.updateSubUrl(str(configDetailsUpdated['sub_url']),database)
-            if float(configDetailsUpdated['device_os_version']) > float(configDetails[0]):
-                codeUpdateFlag = updateToNewCode(str(configDetailsUpdated['device_code_name']),\
-                                                 str(configDetailsUpdated['device_code_url']),\
-                                                 str(configDetailsUpdated['base_url']))
+            if str(configDetailsUpdated['base_URL']) != str(configDetails[1]):
+                dbObject.updateBaseUrl(str(configDetailsUpdated['base_URL']),database)
+            if str(configDetailsUpdated['sub_URL']) != str(configDetails[2]):
+                dbObject.updateSubUrl(str(configDetailsUpdated['sub_URL']),database)
+            if float(configDetailsUpdated['os_version']) > float(configDetails[0]):
+                codeUpdateFlag = updateToNewCode(str(configDetailsUpdated['code_name']),\
+                                                 str(configDetailsUpdated['code_URL']))
                 if codeUpdateFlag == 1:
-                    dbObject.updateOSVersion(float(configDetailsUpdated['device_os_version']),database)
+                    dbObject.updateOSVersion(float(configDetailsUpdated['os_version']),database)
                     restart()            
             return '1'
         else:
@@ -157,10 +156,11 @@ if __name__ == '__main__':
             if (deviceInfo != '0' and deviceInfo != "Server Error"):
                 dbObject.insertIntoDeviceInfoTable(deviceInfo,ipAddress,database)
                 deviceId = int(deviceInfo['id'])
-                
+                print("DeviceId {}".format(deviceId))
             if deviceId != 0:
                 networkConfigStatus = getNetworkConfiguration(deviceId)
                 companyListStatus = getCompanyDetails(deviceId)
+                print("networkConfigStatus: {} companyListStatus {}".format(networkConfigStatus,companyListStatus))
                 if networkConfigStatus == '1' and companyListStatus == '1':
                     updateHeartBitURL()
                     sendConfirmationToServer(deviceId,ipAddress)
@@ -168,10 +168,12 @@ if __name__ == '__main__':
             readUpdateStatus = fileObject.readConfigUpdateStatus()
             if readUpdateStatus == '0':
                 deviceInfo = apiObject.getDeviceInfo(deviceId)
+                print("DeviceId {}".format(deviceId))
                 if (deviceInfo != '0' and deviceInfo != "Server Error"):
                     dbObject.updateDeviceInfoTable(deviceInfo,ipAddress,database)
                     networkConfigStatus = getNetworkConfiguration(deviceId)
                     companyListStatus = getCompanyDetails(deviceId)
+                    print("networkConfigStatus: {} companyListStatus {}".format(networkConfigStatus,companyListStatus))
                     if networkConfigStatus == '1' and companyListStatus == '1':
                         updateHeartBitURL()
                         sendConfirmationToServer(deviceId,ipAddress)
@@ -182,9 +184,3 @@ if __name__ == '__main__':
     except Exception as e:
         dbObject.databaseClose(database)
         fileObject.updateExceptionMessage("sasGetConfiguration{__main__}",str(e))
-
-    
-
-    
-        
-        

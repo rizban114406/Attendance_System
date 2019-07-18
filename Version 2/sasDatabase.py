@@ -21,15 +21,15 @@ class sasDatabase:
     ####################### All Functions Regarding Employee Information Table ###################
     def createTableEmployeeInfoTable(self,database): # Create Employee Information Table
         curs = database.cursor()
-#        try:      
-#            curs.execute("DROP TABLE IF EXISTS employeeInfoTable")
-#            self.databaseCommit(database)
-#            t.sleep(1)
-#        except Exception:
-#            print "Does not Exists"
-        curs.execute("DROP TABLE IF EXISTS employeeInfoTable")
-        self.databaseCommit(database)
-        t.sleep(0.5)
+        try:      
+            curs.execute("DROP TABLE IF EXISTS employeeInfoTable")
+            self.databaseCommit(database)
+            t.sleep(1)
+        except Exception:
+            print("Does not Exists")
+#        curs.execute("DROP TABLE IF EXISTS employeeInfoTable")
+#        self.databaseCommit(database)
+#        t.sleep(0.5)
         curs.execute("CREATE TABLE employeeInfoTable(id INT NOT NULL AUTO_INCREMENT,\
                                                      employeeId varchar(50),\
                                                      uniqueId INT,\
@@ -70,7 +70,7 @@ class sasDatabase:
             if (curs.rowcount == 0):
                 receivedData.append({"uniqueid"     : 0, \
                                      "fingernumber" : 0})
-        except Excecption as e:
+        except Exception as e:
             fileObject.updateExceptionMessage("sasDatabase{getInfoFromEmployeeInfoTable}",str(e))
         return receivedData
 
@@ -167,15 +167,15 @@ class sasDatabase:
     ############################# All Functions Regarding Temporary Table ########################
     def createTableTempTableToSync(self,database): # Create A Temporary Table To Sync With The Server
         curs = database.cursor()
-#        try:      
-#            curs.execute("Drop Table tempTableToSync")
-#            self.databaseCommit(database)
-#            t.sleep(1)
-#        except Exception:
-#            print "Does not Exists"
-        curs.execute("DROP TABLE IF EXISTS tempTableToSync")
-        self.databaseCommit(database)
-        t.sleep(0.5)
+        try:      
+            curs.execute("Drop Table tempTableToSync")
+            self.databaseCommit(database)
+            t.sleep(1)
+        except Exception:
+            print("Does not Exists")
+#        curs.execute("DROP TABLE IF EXISTS tempTableToSync")
+#        self.databaseCommit(database)
+#        t.sleep(0.5)
         curs.execute("CREATE TABLE tempTableToSync(id INT NOT NULL AUTO_INCREMENT,\
                                                    employeeId varchar(50),\
                                                    uniqueId INT,\
@@ -257,15 +257,15 @@ class sasDatabase:
     ######################### All Functions Regarding Event Information Table ####################
     def createTableEventListTable(self,database):
         curs = database.cursor()
-#        try:      
-#            curs.execute("DROP TABLE eventListTable")
-#            self.databaseCommit(database)
-#            t.sleep(1)
-#        except Exception:
-#            print "Does not Exists"
-        curs.execute("DROP TABLE IF EXISTS eventListTable")
-        self.databaseCommit(database)
-        t.sleep(0.5)
+        try:      
+            curs.execute("DROP TABLE eventListTable")
+            self.databaseCommit(database)
+            t.sleep(1)
+        except Exception:
+            print("Does not Exists")
+#        curs.execute("DROP TABLE IF EXISTS eventListTable")
+#        self.databaseCommit(database)
+#        t.sleep(0.5)
         curs.execute("CREATE TABLE eventListTable(id INT NOT NULL AUTO_INCREMENT,\
                                                  uniqueId INT,\
                                                  fingerOrCard INT,\
@@ -315,15 +315,15 @@ class sasDatabase:
     ####################### All Functions Regarding Employee Card Info ###################
     def createTableEmployeeCardInfo(self,database): # Create Employee Card Info Table
         curs = database.cursor()
-#        try:      
-#            curs.execute("DROP TABLE employeeCardInfo")
-#            self.databaseCommit(database)
-#            t.sleep(1)
-#        except Exception:
-#            print "Does not Exists"
-        curs.execute("DROP TABLE IF EXISTS employeeCardInfo")
-        self.databaseCommit(database)
-        t.sleep(0.5)
+        try:      
+            curs.execute("DROP TABLE employeeCardInfo")
+            self.databaseCommit(database)
+            t.sleep(1)
+        except Exception:
+            print("Does not Exists")
+#        curs.execute("DROP TABLE IF EXISTS employeeCardInfo")
+#        self.databaseCommit(database)
+#        t.sleep(0.5)
         curs.execute("CREATE TABLE employeeCardInfo(id INT NOT NULL AUTO_INCREMENT,\
                                                    employeeId varchar(50),\
                                                    uniqueId INT,\
@@ -403,7 +403,6 @@ class sasDatabase:
                                                        int(companyId)))
             self.databaseCommit(database)
         except Exception as e:
-            print str(e)
             fileObject.updateExceptionMessage("sasDatabase{insertIntoEmployeeCardInfoTable}",str(e))
 
     def getEmployeeDetailsFromCard(self,cardNumber,database):
@@ -427,7 +426,10 @@ class sasDatabase:
             self.databaseCommit(database)
             t.sleep(1)
         except Exception:
-            print "Does not Exists"
+            print("Does not Exists")
+#        curs.execute("DROP TABLE IF EXISTS companyListTable")
+#        self.databaseCommit(database)
+#        t.sleep(.5)
         curs.execute("CREATE TABLE companyListTable(id INT NOT NULL AUTO_INCREMENT,\
                                                   companyId INT,\
                                                   shortName text,\
@@ -467,7 +469,10 @@ class sasDatabase:
             curs.execute("DROP TABLE configurationTable")
             self.databaseCommit(database)
         except Exception:
-            print "Does not Exists"
+            print("Does not Exists")
+#        curs.execute("DROP TABLE IF EXISTS configurationTable")
+#        self.databaseCommit(database)
+#        t.sleep(.5)
         curs.execute("CREATE TABLE configurationTable(id INT NOT NULL AUTO_INCREMENT,\
                                                   deviceOSVersion double,\
                                                   baseUrl text,\
@@ -535,7 +540,10 @@ class sasDatabase:
             self.databaseCommit(database)
             t.sleep(1)
         except Exception:
-            print "Does not Exists"
+            print("Does not Exists")
+#        curs.execute("DROP TABLE IF EXISTS deviceInfoTable")
+#        self.databaseCommit(database)
+#        t.sleep(.5)
         curs.execute("CREATE TABLE deviceInfoTable(id INT NOT NULL AUTO_INCREMENT,\
                                                   deviceId int,\
                                                   hardwareId text,\
@@ -575,12 +583,12 @@ class sasDatabase:
                                   ipAddress,\
                                   database):
         curs = database.cursor()
-        if (deviceInfo['companyid'] is None):
-            deviceInfo['companyid'] = ""
-        if (deviceInfo['address'] is None):
-            deviceInfo['address'] = ""
-        if (deviceInfo['subaddress'] is None):
-            deviceInfo['subaddress'] = ""
+        if (deviceInfo['company_id'] is None):
+            deviceInfo['company_id'] = ""
+        if (deviceInfo['office_address'] is None):
+            deviceInfo['office_address'] = ""
+        if (deviceInfo['office_sub_address'] is None):
+            deviceInfo['office_sub_address'] = ""
         try:
             curs.execute("INSERT INTO deviceInfoTable(deviceId,\
                                                       hardwareId,\
@@ -589,39 +597,37 @@ class sasDatabase:
                                                       subAddress,\
                                                       ipAddress) VALUES (%s,%s,%s,%s,%s,%s)",\
                                                       (int(deviceInfo['id']),\
-                                                       str(deviceInfo['hardwareid']),\
-                                                       str(deviceInfo['companyid']),\
-                                                       str(deviceInfo['address']),\
-                                                       str(deviceInfo['subaddress']),\
+                                                       str(deviceInfo['hardware_id']),\
+                                                       str(deviceInfo['company_id']),\
+                                                       str(deviceInfo['office_address']),\
+                                                       str(deviceInfo['office_sub_address']),\
                                                        str(ipAddress)))
             self.databaseCommit(database)
         except Exception as e:
-            print str(e)
             fileObject.updateExceptionMessage("sasDatabase{insertIntoDeviceInfoTable}",str(e))
 
     def updateDeviceInfoTable(self,deviceInfo,\
                               ipAddress,\
                               database):
         curs = database.cursor()
-        if (deviceInfo['companyid'] is None):
-            deviceInfo['companyid'] = ""
-        if (deviceInfo['address'] is None):
-            deviceInfo['address'] = ""
-        if (deviceInfo['subaddress'] is None):
-            deviceInfo['subaddress'] = ""
+        if (deviceInfo['company_id'] is None):
+            deviceInfo['company_id'] = ""
+        if (deviceInfo['office_address'] is None):
+            deviceInfo['office_address'] = ""
+        if (deviceInfo['office_sub_address'] is None):
+            deviceInfo['office_sub_address'] = ""
         try:
             curs.execute ("UPDATE deviceInfoTable SET companyId = %s, \
                                                   address = %s, \
                                                   subAddress = %s, \
                                                   ipAddress = %s \
                                                   WHERE id = 1",\
-                                                  (str(deviceInfo['companyid']),\
-                                                   str(deviceInfo['address']),\
-                                                   str(deviceInfo['subaddress']),\
+                                                  (str(deviceInfo['company_id']),\
+                                                   str(deviceInfo['office_address']),\
+                                                   str(deviceInfo['office_sub_address']),\
                                                    str(ipAddress)))
             self.databaseCommit(database)
         except Exception as e:
-            print str(e)
             fileObject.updateExceptionMessage("sasDatabase{updateDeviceInfoTable}",str(e))
         
     ####################### All Functions Regarding Device Info Table ###################
