@@ -39,7 +39,7 @@ class sasAllAPI:
     def getFingerId(self,uniqueId,matrix,selectedCompany,deviceId):
         try:
             receivedData = []
-            mainURL = self.mainURL + "fingerprint_enrollment.php"
+            mainURL = self.mainURL + "fingerprint_enrollment"
             payload = {"uniqueid"     : uniqueId, \
                        "fingermatrix" : matrix , \
                        "deviceid"     : deviceId, \
@@ -65,7 +65,7 @@ class sasAllAPI:
             mainURL = self.mainURL + "device_data"
             dataToSend = json.dumps(mainData,sort_keys = True)
             payload = {"data" : dataToSend}
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 40)
 #            print("Data Received {}".format(r.content))
             output = json.loads(r.content)

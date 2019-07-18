@@ -448,9 +448,9 @@ def workWithFingerPrintSensor():
         try:
             f = configureFingerPrint()
             lock.acquire()
-            fileObject.updateCatTask('4')
+            fileObject.updateDesiredTask('4')
             syncWithOtherDevices(f)
-            fileObject.updateCatTask('1')
+            fileObject.updateDesiredTask('1')
             lock.release()
             lcdPrint.printInitialMessage()
             while True:  
@@ -462,19 +462,19 @@ def workWithFingerPrintSensor():
                 lock.acquire()
                 desiredTask = fileObject.readDesiredTask()
                 if desiredTask == '1':
-                    fileObject.updateCatTask('6')
+                    fileObject.updateDesiredTask('6')
                     desiredTask = '6'
     #            print("Modified Task is {}".format(desiredTask))    
                 if desiredTask == '6':
                     lcdPrint.printPleaseWait()
                     matchFingerPrint(f)
-                    fileObject.updateCatTask('1')
+                    fileObject.updateDesiredTask('1')
                     lcdPrint.printInitialMessage()
                     
                 elif desiredTask == '2':
                     lcdPrint.printPleaseWait()
                     enrollNewEmployee(f,deviceId)
-                    fileObject.updateCatTask('1')
+                    fileObject.updateDesiredTask('1')
                     lcdPrint.printInitialMessage()     
                 lock.release()
                 t.sleep(1)
@@ -499,7 +499,7 @@ def workWithRFSensor():
                     lcdPrint.printPleaseWait()
     #                print('Card Number is: {}'.format(employeeCardNumber))
                     createEventLogg(employeeCardNumber,'2')
-                    fileObject.updateCatTask('1')
+                    fileObject.updateDesiredTask('1')
                     lcdPrint.printInitialMessage()
                 lock.release()
                 t.sleep(1)

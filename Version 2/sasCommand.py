@@ -13,13 +13,13 @@ def digit():
     return r
 if __name__ == '__main__':
     command = '1'
-    fileObject.updateCatTask('1')
+    fileObject.updateDesiredTask('1')
     while True:
       try:
         ch = digit()
         print("Pressed Key is {}".format(ch))
         if (ch == '#'):
-            fileObject.updateCatTask('2')
+            fileObject.updateDesiredTask('2')
             while 1:
                 task = fileObject.readDesiredTask()
                 if task == '1':
