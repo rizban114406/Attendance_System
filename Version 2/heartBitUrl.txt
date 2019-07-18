@@ -1,1 +1,1 @@
-http://spectrumtechiot.com/asAPI/server_heartbit
+http://103.108.147.49/SAS/public/api/server_heartbit
