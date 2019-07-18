@@ -17,9 +17,9 @@ def getFingerPrintInformation(deviceId):
         elif(receivedDataSync == "Server Error"):
             return "Server Down"
         else:
-            if(len(receivedDataSync['sync_with_modified_data']) > 0 or len(receivedDataSync['delete_request_enrollment']) > 0):
-                if len(receivedDataSync['sync_with_modified_data']) > 0:
-                    for data in receivedDataSync['sync_with_modified_data']:
+            if(len(receivedDataSync['data']) > 0 or len(receivedDataSync['delete_request_enrollment']) > 0):
+                if len(receivedDataSync['data']) > 0:
+                    for data in receivedDataSync['data']:
                         dbObject.insertToTempTableToSync(data['employeeid'],\
                                                          data['uniqueid'],\
                                                          data['firstname'],\
@@ -54,9 +54,9 @@ def getRFCardInformation(deviceId):
         elif(receivedDataSync == "Server Error"):
             return "Server Down"
         else:
-            if(len(receivedDataSync['sync_with_modified_data']) > 0 or len(receivedDataSync['delete_request_enrollment']) > 0):
-                if len(receivedDataSync['sync_with_modified_data']) > 0:
-                    for data in receivedDataSync['sync_with_modified_data']:
+            if(len(receivedDataSync['data']) > 0 or len(receivedDataSync['delete_request_enrollment']) > 0):
+                if len(receivedDataSync['data']) > 0:
+                    for data in receivedDataSync['data']:
                         # print (data['uniqueid']," ",data['companyid'])
                         dbObject.insertIntoEmployeeCardInfoTable(data['employeeid'],\
                                                                  data['uniqueid'],\

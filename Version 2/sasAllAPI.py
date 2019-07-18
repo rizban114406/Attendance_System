@@ -81,13 +81,14 @@ class sasAllAPI:
         try:
             mainURL = self.mainURL + "fingerprint_sync"
             dataToSend = json.dumps(receivedData)
-            payload = {"data" : dataToSend}
+            payload = {"data"     : dataToSend,\
+                       "deviceid" : deviceId}
 #            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 200)
 #            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success'):
-                return output['data']
+                return output
             else:
                 return "Some Thing Is Wrong"       
         except Exception as e:
@@ -98,7 +99,7 @@ class sasAllAPI:
         try:
             mainURL = self.mainURL + "rfid_sync"
             dataToSend = json.dumps(receivedData)
-            payload = {"data"      : dataToSend,\
+            payload = {"data"     : dataToSend,\
                        "deviceid" : deviceId}
 #            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 200)
@@ -107,7 +108,7 @@ class sasAllAPI:
             if (output['status'] == 'success'):
                 if output['data']['sync_status'] == '0':
                     fileObject.updateConfigUpdateStatus('0')
-                return output['data']
+                return output
             else:
                 return "Some Thing Is Wrong"
         
