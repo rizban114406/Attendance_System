@@ -33,7 +33,7 @@ def getFingerPrintInformation(deviceId):
                         dbObject.insertToTempTableToSync("N",\
                                                          data['uniqueid'],\
                                                          "N",\
-                                                         0,\
+                                                         data['fingernumber'],\
                                                          "N",\
                                                          '3',\
                                                          '0',\

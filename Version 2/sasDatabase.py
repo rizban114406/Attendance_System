@@ -41,10 +41,10 @@ class sasDatabase:
                                                      PRIMARY KEY(id))")
         self.databaseCommit(database)
 
-    def deleteFromEmployeeInfoTable(self,uniqueId,database): # Delete From Employee Infromation Table After Deleting Employee
+    def deleteFromEmployeeInfoTable(self,uniqueId,fingerId,database): # Delete From Employee Infromation Table After Deleting Employee
         curs = database.cursor()
         curs.execute("Delete FROM employeeInfoTable \
-                      WHERE uniqueId = %s",(int(uniqueId)))
+                      WHERE uniqueId = %s and fingerId = %s",(int(uniqueId),int(fingerId)))
         self.databaseCommit(database)
 
     def deleteFromEmployeeInfoTableToSync(self,notListedTemplateNumber,database): # Delete From Employee Infromation Table After Deleting Employee
@@ -85,12 +85,13 @@ class sasDatabase:
         employeeNumber = curs.fetchone()
         return int(employeeNumber[0])
 
-    def checkEmployeeInfoTableToDelete(self,uniqueId,database): # 
+    def checkEmployeeInfoTableToDelete(self,uniqueId,fingerId,database): # 
         curs = database.cursor()
         curs.execute ("SELECT fingerId \
                        FROM employeeInfoTable \
-                       WHERE uniqueId = %s", \
-                      (int(uniqueId)))
+                       WHERE uniqueId = %s and fingerId = %s", \
+                      (int(uniqueId),\
+                       int(fingerId)))
         if (curs.rowcount != 0):
             employeeFingerId = curs.fetchone()
             return int(employeeFingerId[0])
@@ -223,16 +224,16 @@ class sasDatabase:
         except Exception as e:
             fileObject.updateExceptionMessage("sasDatabase{insertToTempTableToSync}",str(e))
 
-    def deleteFromTempTableToSync(self,uniqueId,database): # Delete From Temporary Table After Synced
+    def deleteFromTempTableToSync(self,uniqueId,fingerId,database): # Delete From Temporary Table After Synced
         curs = database.cursor()
         curs.execute("Delete FROM tempTableToSync \
-                      WHERE uniqueId = %s",(int(uniqueId)))
+                      WHERE uniqueId = %s and fingerId = %s",(int(uniqueId),int(fingerId)))
         self.databaseCommit(database)
 
     def getInfoFromTempTableToDelete(self,database): # Get Data From Temporary Table To Sync With The Server
         curs = database.cursor()
         try:     
-            curs.execute("SELECT uniqueId From tempTableToSync Where desiredTask = '3'")
+            curs.execute("SELECT uniqueId,fingerId From tempTableToSync Where desiredTask = '3'")
             if (curs.rowcount != 0):
                 return curs
             else:
