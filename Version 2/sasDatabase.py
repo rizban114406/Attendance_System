@@ -64,6 +64,7 @@ class sasDatabase:
             curs = database.cursor()
             curs.execute("SELECT uniqueId,fingerId From employeeInfoTable")
             receivedData = []
+            data = {"data": receivedData}
             for reading in curs.fetchall():
                 receivedData.append({"uniqueid"     : reading[0], \
                                      "fingernumber" : reading[1]})
@@ -72,7 +73,7 @@ class sasDatabase:
                                      "fingernumber" : 0})
         except Exception as e:
             fileObject.updateExceptionMessage("sasDatabase{getInfoFromEmployeeInfoTable}",str(e))
-        return receivedData
+        return data
 
     def dropEmployeeInfoTable(self,database): # Drop Employee Information Table
         curs = database.cursor()
@@ -356,11 +357,12 @@ class sasDatabase:
         curs.execute("Select uniqueId, cardNumber \
                       From employeeCardInfo")
         receivedData = []
+        data = {"data" : receivedData}
         for reading in curs.fetchall():
             receivedData.append({"uniqueid" : reading[0], "cardnumber" : reading[1]})
         if (curs.rowcount == 0):
             receivedData.append({"uniqueid" : 0, "cardnumber" : 0})
-        return receivedData
+        return data
 
     def dropEmployeeCardInfoTable(self,database): # Drop Employee Card Info Table
         curs = database.cursor()

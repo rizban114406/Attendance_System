@@ -29,5 +29,5 @@ if __name__ == '__main__':
                 t.sleep(1)
         t.sleep(1)
       except Exception as e:
-          fileObject.updateExceptionMessage("attendanceCommand",str(e))
+          fileObject.updateExceptionMessage("sasCommand",str(e))
           t.sleep(5)

@@ -98,7 +98,7 @@ if __name__ == '__main__':
                         task = fileObject.readDesiredTask()
                         if task == '1':
                             import os
-                            os.system('sudo pkill -f attendanceFingerPrint.py')
+                            os.system('sudo pkill -f sasMain.py')
                             fingerStat = "Synced"
                             t.sleep(1)
                             break

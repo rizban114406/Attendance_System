@@ -40,4 +40,4 @@ if __name__ == '__main__':
         #print str(e)
         fileObject = sasFile()
         dbObject.databaseClose(database)
-        fileObject.updateExceptionMessage("attendanceEventSend",str(e))
+        fileObject.updateExceptionMessage("sasEvents{__main__}",str(e))

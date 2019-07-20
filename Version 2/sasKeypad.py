@@ -9,8 +9,11 @@ class sasKeypad():
     ["*",0,"#","D"]
     ]
 
-    ROW         = [27,17,6,5]
-    COLUMN      = [25,24,23,18]
+    # ROW         = [27,17,6,5]
+    # COLUMN      = [25,24,23,18]
+
+    ROW         = [5,6,17,27]
+    COLUMN      = [18,23,24,25]
 
     def __init__(self):
         GPIO.setwarnings(False)

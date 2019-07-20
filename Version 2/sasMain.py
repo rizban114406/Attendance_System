@@ -45,9 +45,10 @@ def configureFingerPrint():
                 break
         except Exception as e:
             #lcdPrint.printExceptionMessage(str(e))
-            fileObject.updateExceptionMessage("attendanceFingerPrint{configureFingerPrint}",str(e))
+            fileObject.updateExceptionMessage("sasMain{configureFingerPrint}",str(e))
             #t.sleep(1)
-            sys.exit()    
+#            sys.exit()  
+            os.system('sudo pkill -f sasMain.py')
     return f
 
 def checkCurrentDateTime():
@@ -127,9 +128,10 @@ def syncWithOtherDevices(f):
         updateListOfUsedTemplates(f)
     except Exception as e:
         fileObject.updateExceptionMessage("sasMain{syncWithOtherDevices}",str(e))
-        fileObject.updateCatTask('1')
+        fileObject.updateDesiredTask('1')
         dbObject.databaseClose(database)
-        sys.exit()
+#        sys.exit()
+        os.system('sudo pkill -f sasMain.py')
         
 def calculateTimeDifference(currentDateTime,timeLimit):
     NowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -481,6 +483,7 @@ def workWithFingerPrintSensor():
     #            print("A finger Is read")
         except Exception as e:
             fileObject.updateExceptionMessage("sasMain{workWithFingerPrintSensor}",str(e))
+            lock.release()
         
 def workWithRFSensor():
     global desiredTask
@@ -489,11 +492,11 @@ def workWithRFSensor():
             while True:
                 rfScannerValue = readFromRFIDScanner()
                 employeeCardNumber = int(rfScannerValue,16)
-                #employeeCardNumber = 555121512
+                print(employeeCardNumber)
                 lock.acquire()
                 desiredTask = fileObject.readDesiredTask()
                 if desiredTask == '1':
-                    fileObject.updateCatTask('7')
+                    fileObject.updateDesiredTask('7')
                     desiredTask = '7'
                 if desiredTask == '7':
                     lcdPrint.printPleaseWait()
@@ -504,7 +507,8 @@ def workWithRFSensor():
                 lock.release()
                 t.sleep(1)
         except Exception as e:
-            fileObject.updateExceptionMessage("sasMain{workWithFingerPrintSensor}",str(e))
+            fileObject.updateExceptionMessage("sasMain{workWithRFSensor}",str(e))
+            lock.release()
 
 def functionKillProgram():
     #print("Killing Started")
@@ -516,8 +520,8 @@ def functionKillProgram():
             if task == '1':
                 break
             t.sleep(1)
-    os.system('sudo pkill -f attendanceAllinSingleThread.py')
-    os.system('sudo pkill -f attendanceGetFingerInfo.py')
+    os.system('sudo pkill -f sasMain.py')
+    os.system('sudo pkill -f sasSyncDevice.py')
 
 if __name__ == '__main__':
     if deviceId != 0:

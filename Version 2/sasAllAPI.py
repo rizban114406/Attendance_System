@@ -101,7 +101,7 @@ class sasAllAPI:
             dataToSend = json.dumps(receivedData)
             payload = {"data"     : dataToSend,\
                        "deviceid" : deviceId}
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 200)
 #            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
