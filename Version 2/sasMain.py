@@ -9,7 +9,6 @@ import datetime
 import time as t
 import threading
 import serial
-import sys
 
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
@@ -523,7 +522,17 @@ def functionKillProgram():
     os.system('sudo pkill -f sasMain.py')
     os.system('sudo pkill -f sasSyncDevice.py')
 
+def setDeviceTime():
+    try:
+        nowTime = apiObject.getTime()
+        if nowTime != "Not Successfull":
+            command = "sudo date -s "+ '"'+nowTime+'"'
+            os.system(command)
+    except Exception as e:
+        fileObject.updateExceptionMessage("sasMain{setDEviceTime}",str(e))
+        
 if __name__ == '__main__':
+    setDeviceTime()
     if deviceId != 0:
         lcdPrint.printInitialMessage()     
         fingerPrint = threading.Thread(target = workWithFingerPrintSensor)

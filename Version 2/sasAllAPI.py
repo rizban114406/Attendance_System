@@ -22,9 +22,9 @@ class sasAllAPI:
             mainURL = self.mainURL + "valid_employee"
             payload = {"employee"  : employeeId, \
                        "companyid" : selectedCompany}
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload, timeout = 40)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success' and output['code'] == "1"):
                 return str(output['data'])
@@ -44,9 +44,9 @@ class sasAllAPI:
                        "fingermatrix" : matrix , \
                        "deviceid"     : deviceId, \
                        "companyid"    : selectedCompany}
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload, timeout = 40)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success'):
                 receivedData.append(output['data']['employeeid'])
@@ -67,7 +67,7 @@ class sasAllAPI:
             payload = {"data" : dataToSend}
             print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 40)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success'):
                 return "Success"
@@ -76,6 +76,20 @@ class sasAllAPI:
         except Exception as e:
             fileObject.updateExceptionMessage("sasAllAPI{sendEventData}",str(e))
             return str(e)
+        
+    def getTime(self):
+        try:
+            mainURL = self.mainURL + "get_time"
+            r = requests.post(mainURL,timeout = 5)
+            print("Data Received {}".format(r.content))
+            output = json.loads(r.content)
+            if (output['status'] == 'success'):
+                return output['data']
+            else:
+                return "Not Successfull"
+        except Exception as e:
+            fileObject.updateExceptionMessage("sasAllAPI{getTime}",str(e))
+            return "Not Successfull"
 
     def getDataToSync(self,receivedData,deviceId):
         try:
@@ -83,9 +97,9 @@ class sasAllAPI:
             dataToSend = json.dumps(receivedData)
             payload = {"data"     : dataToSend,\
                        "deviceid" : deviceId}
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 200)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success'):
                 return output
@@ -103,7 +117,7 @@ class sasAllAPI:
                        "deviceid" : deviceId}
             print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 200)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success'):
                 if output['sync_status'] == '0':
@@ -121,9 +135,9 @@ class sasAllAPI:
             mainURL = self.mainURL + "check_device_auth"
             payload = {"deviceid" : deviceId, \
                        "password"  : password }
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == "success"):
                 return "Matched"
@@ -142,9 +156,9 @@ class sasAllAPI:
                        "ip"        : ipAddress, \
                        "osversion" : osVersion,  \
                        "syncstatus": sync_status }
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == "success" and output['code'] == "1"):
                 return '1'
@@ -159,10 +173,10 @@ class sasAllAPI:
         try:
             mainURL = self.mainURL + "get_device"
             payload = {"deviceid" : deviceId }
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
             output = json.loads(r.content)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             if (output['status'] == "success" and output['code'] == "1"):
                 return output['data']
             else:
@@ -176,9 +190,9 @@ class sasAllAPI:
         try:
             mainURL = self.mainURL + "get_company"
             payload = {"deviceid" : deviceId }
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == "success"):
                 return output['data']
@@ -193,9 +207,9 @@ class sasAllAPI:
             mainURL = self.mainURL + "create_device"
             payload = {"hardwareid" : hardwareId, \
                        "osversion"  : osVersion }
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == "success" and output['code'] == "1"):
                 return output['data']
@@ -209,10 +223,10 @@ class sasAllAPI:
         try:
             mainURL = self.mainURL + "get_config"
             payload = {"deviceid" : deviceId }
-#            print("Data To Be Sent: {}".format(payload))
+            print("Data To Be Sent: {}".format(payload))
             r = requests.post(mainURL, data = payload,timeout = 10)
             output = json.loads(r.content)
-#            print("Data Received {}".format(r.content))
+            print("Data Received {}".format(r.content))
             if (output['status'] == "success" and output['code'] == "1"):
                 return output['data']
             else:
