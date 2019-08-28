@@ -339,8 +339,9 @@ def enrollNewEmployee(f,deviceId):
                     if selectedCompany > 0:
                         employeeId = getEmployeeIdToEnroll(currentDateTime)
                         if (employeeId != "Time Out" and len(employeeId) != 0):
-                            localCheck = dbObject.checkEmployeeInfoTable(employeeId,selectedCompany,database)
+                            #localCheck = dbObject.checkEmployeeInfoTable(employeeId,selectedCompany,database)
                             #print localCheck
+                            localCheck = "Not Registered"
                             x = calculateTimeDifference(currentDateTime,150)
                             if (localCheck != "Registered"):
                                 serverCheck = apiObject.checkServerStatus(employeeId,selectedCompany)
