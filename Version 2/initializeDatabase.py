@@ -15,6 +15,8 @@ try:
     dbObject.createTableDeviceInfoTable(database)
     dbObject.createTableConfigInfoTable(database)
     dbObject.insertIntoConfigurationTable("1","103.108.147.49","/SAS/public/api/",database)
+    url = "http://" + "103.108.147.49" + "/SAS/public/api/" + "server_heartbit"
+    fileObject.updateHearBitURL(url)
     fileObject.updateConfigUpdateStatus('0')
     dbObject.databaseClose(database)
     print ("Device Initialized")
@@ -27,6 +29,8 @@ except Exception as e:
     dbObject.createTableDeviceInfoTable(database)
     dbObject.createTableConfigInfoTable(database)
     dbObject.insertIntoConfigurationTable("1","103.108.147.49","/SAS/public/api/",database)
+    url = "http://" + "103.108.147.49" + "/SAS/public/api/" + "server_heartbit"
+    fileObject.updateHearBitURL(url)
     fileObject.updateConfigUpdateStatus('0')
     dbObject.databaseClose(database)
     print ("Device Initialized")

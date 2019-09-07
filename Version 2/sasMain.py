@@ -45,8 +45,6 @@ def configureFingerPrint():
         except Exception as e:
             #lcdPrint.printExceptionMessage(str(e))
             fileObject.updateExceptionMessage("sasMain{configureFingerPrint}",str(e))
-            #t.sleep(1)
-#            sys.exit()  
             os.system('sudo pkill -f sasMain.py')
     return f
 
@@ -442,6 +440,7 @@ def readFromRFIDScanner():
     except Exception as e:
         ser.close()
         fileObject.updateExceptionMessage("sasMain{readFromRFIDScanner}",str(e))
+        os.system('sudo pkill -f sasMain.py')
         return "NA"
     
 def workWithFingerPrintSensor():
@@ -483,6 +482,7 @@ def workWithFingerPrintSensor():
     #            print("A finger Is read")
         except Exception as e:
             fileObject.updateExceptionMessage("sasMain{workWithFingerPrintSensor}",str(e))
+            os.system('sudo pkill -f sasMain.py')
             lock.release()
         
 def workWithRFSensor():
@@ -508,6 +508,7 @@ def workWithRFSensor():
                 t.sleep(1)
         except Exception as e:
             fileObject.updateExceptionMessage("sasMain{workWithRFSensor}",str(e))
+            os.system('sudo pkill -f sasMain.py')
             lock.release()
 
 def functionKillProgram():

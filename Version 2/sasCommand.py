@@ -9,7 +9,7 @@ def digit():
         r = keypress.getKey()
         if r != None:
             break
-        t.sleep(.2)
+        t.sleep(1)
     return r
 if __name__ == '__main__':
     command = '1'

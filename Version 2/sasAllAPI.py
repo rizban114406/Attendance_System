@@ -120,7 +120,7 @@ class sasAllAPI:
             print("Data Received {}".format(r.content))
             output = json.loads(r.content)
             if (output['status'] == 'success'):
-                if output['sync_status'] == '0':
+                if output['sync_status'] == 0:
                     fileObject.updateConfigUpdateStatus('0')
                 return output
             else:
