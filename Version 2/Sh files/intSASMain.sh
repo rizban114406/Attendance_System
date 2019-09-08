@@ -5,7 +5,7 @@ sleep 17s
 while  :
 do
 read -r url < /root/heartBitUrl.txt
-if curl -m 5 "$url" > /dev/null
+if curl -m 10 "$url" > /dev/null
 then
 read -r ipAddress < /root/ntpServer.txt
 sudo /etc/init.d/ntp stop

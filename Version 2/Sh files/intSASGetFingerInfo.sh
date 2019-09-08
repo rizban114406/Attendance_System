@@ -5,7 +5,7 @@ sleep 13s
 while  :
 do
 read -r url < /root/heartBitUrl.txt
-if curl -m 5 "$url" > /dev/null
+if curl -m 10 "$url" > /dev/null
 then
 cd /
 cd /root/
@@ -19,7 +19,7 @@ done
 while :
 do
 read -r url < /root/heartBitUrl.txt
-if curl -m 5 "$url" > /dev/null
+if curl -m 10 "$url" > /dev/null
 then
 cd /
 cd /root/

@@ -1,16 +1,10 @@
 #!/bin/bash
+sleep 5m
 
-sleep 15s
-while :
-do
 read -r url < /root/heartBitUrl.txt
 if curl -m 10 "$url" > /dev/null
 then
-cd /
-cd /root/
-sudo python sasEvents.py
-cd /
-sleep 10s
+echo "Connected"
+else
+sudo reboot
 fi
-sleep 2s
-done
